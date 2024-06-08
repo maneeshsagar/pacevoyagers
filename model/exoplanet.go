@@ -4,9 +4,9 @@ type Exoplanet struct {
 	Id                int
 	Name              string
 	Description       string
-	DistanceFromEarth float32
-	Radius            float32
-	Mass              float32
+	DistanceFromEarth float64
+	Radius            float64
+	Mass              float64
 	Type              string
 }
 

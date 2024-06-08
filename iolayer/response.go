@@ -6,9 +6,9 @@ type ExoplanetResponse struct {
 	Id                int     `json:"id"`
 	Name              string  `json:"name"`
 	Description       string  `json:"description"`
-	DistanceFromEarth float32 `json:"distance_from_earth"`
-	Radius            float32 `json:"radius"`
-	Mass              float32 `json:"mass"`
+	DistanceFromEarth float64 `json:"distance_from_earth"`
+	Radius            float64 `json:"radius"`
+	Mass              float64 `json:"mass"`
 	Type              string  `json:"type"`
 }
 
@@ -32,4 +32,8 @@ func (e *ExoplanetResponse) DomainToResponse(exoplanet *model.Exoplanet) {
 	e.Radius = exoplanet.Radius
 	e.Mass = exoplanet.Mass
 	e.Type = exoplanet.Type
+}
+
+type FuelResposne struct {
+	Fuel float64 `json:"fuel"`
 }

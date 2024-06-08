@@ -3,6 +3,7 @@ package service
 import (
 	"errors"
 	"log"
+	"math"
 
 	"github.com/maneeshsagar/pacevoyagers/model"
 )
@@ -84,5 +85,26 @@ func (e *ExoplanetService) GetExoplanetById(exoplanetId int) (exoplanet *model.E
 		return
 	}
 
+	return
+}
+
+func (e *ExoplanetService) CalculateFuelEstimation(id, crewCapacity int) (fuel float64, msg string, code int, err error) {
+	exoplanet, ok := e.PlanetIdPlanetMap[id]
+	if !ok {
+		msg = "exoplanet not found"
+		code = 404
+		err = errors.New(msg)
+		return
+	}
+
+	var gravity float64
+	switch exoplanet.Type {
+	case "GasGiant":
+		gravity = 0.5 / math.Pow(exoplanet.Radius, 2)
+	case "Terrestrial":
+		gravity = exoplanet.Mass / math.Pow(exoplanet.Radius, 2)
+	}
+
+	fuel = float64(exoplanet.DistanceFromEarth) / math.Pow(gravity, 2) * float64(crewCapacity)
 	return
 }

@@ -75,7 +75,7 @@ func GetExoplanet(spaceService service.Driver) gin.HandlerFunc {
 
 	return func(ctx *gin.Context) {
 
-		exoplanetId := ctx.Param("exoplanetId")
+		exoplanetId := ctx.Param("id")
 
 		serviceExoplanet, msg, code, err := spaceService.GetExoplanetById(cast.ToInt(exoplanetId))
 		if err != nil {
@@ -133,7 +133,7 @@ func DeleteExoplanet(spaceService service.Driver) gin.HandlerFunc {
 
 	return func(ctx *gin.Context) {
 
-		exoplanetId := ctx.Param("exoplanetId")
+		exoplanetId := ctx.Param("id")
 
 		msg, code, err := spaceService.DeleteExoplanet(cast.ToInt(exoplanetId))
 		if err != nil {
@@ -144,6 +144,43 @@ func DeleteExoplanet(spaceService service.Driver) gin.HandlerFunc {
 		}
 
 		response := util.NewResponse(200, "success", nil)
+		ctx.JSON(200, response)
+	}
+}
+
+func GetFuelEstimation(spaceService service.Driver) gin.HandlerFunc {
+	funtionName := "handlers.GetFuelEstimation"
+
+	return func(ctx *gin.Context) {
+
+		exoplanetId := ctx.Param("id")
+		crewCapacityStr := ctx.Query("crew")
+		if crewCapacityStr == "" {
+			response := util.NewResponse(400, "crew capacity is required", nil)
+			ctx.JSON(200, response)
+			return
+		}
+
+		crewCapacity := cast.ToInt(crewCapacityStr)
+		if crewCapacity <= 0 {
+			response := util.NewResponse(400, "crew capacity is required", nil)
+			ctx.JSON(200, response)
+			return
+		}
+
+		fuel, msg, code, err := spaceService.CalculateFuelEstimation(cast.ToInt(exoplanetId), crewCapacity)
+		if err != nil {
+			log.Println(funtionName, "error : failed to estimate ", err)
+			response := util.NewResponse(code, msg, nil)
+			ctx.JSON(200, response)
+			return
+		}
+
+		actualResponse := iolayer.FuelResposne{
+			Fuel: fuel,
+		}
+
+		response := util.NewResponse(200, "success", actualResponse)
 		ctx.JSON(200, response)
 	}
 }
