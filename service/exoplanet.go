@@ -20,13 +20,15 @@ func NewExoplanetService() Driver {
 	}
 }
 
-func (e *ExoplanetService) AddExoplanet(exoplanet *model.Exoplanet) (err error) {
+func (e *ExoplanetService) AddExoplanet(exoplanet *model.Exoplanet) (savedExoplanet *model.Exoplanet, err error) {
 	e.GlobalId++
+	exoplanet.Id = e.GlobalId
 	e.PlanetIdPlanetMap[e.GlobalId] = exoplanet
+	savedExoplanet = e.PlanetIdPlanetMap[e.GlobalId]
 	return
 }
 
-func (e *ExoplanetService) UpdateExoplanet(exoplanet *model.Exoplanet) (msg string, code int, err error) {
+func (e *ExoplanetService) UpdateExoplanet(exoplanet *model.Exoplanet) (savedExoplanet *model.Exoplanet, msg string, code int, err error) {
 	functionName := "service.UpdateExoplanet"
 
 	oldExoplanet, ok := e.PlanetIdPlanetMap[exoplanet.Id]
@@ -34,11 +36,12 @@ func (e *ExoplanetService) UpdateExoplanet(exoplanet *model.Exoplanet) (msg stri
 		msg = "planet doest not exist"
 		code = 404
 		err = errors.New("planet doesn't exists")
-		log.Fatal(functionName, "planet doesn't exists planet Id ", exoplanet.Id)
+		log.Fatal(functionName, " planet doesn't exists planet Id ", exoplanet.Id)
 		return
 	}
-
+	exoplanet.Id = oldExoplanet.Id
 	e.PlanetIdPlanetMap[oldExoplanet.Id] = exoplanet
+	savedExoplanet = exoplanet
 	return
 }
 
@@ -49,7 +52,7 @@ func (e *ExoplanetService) DeleteExoplanet(exoplanetId int) (msg string, code in
 		msg = "planet doest not exist"
 		code = 404
 		err = errors.New("planet doesn't exists")
-		log.Fatal(functionName, "planet doesn't exists planet Id ", exoplanet.Id)
+		log.Fatal(functionName, " planet doesn't exists planet Id ", exoplanet.Id)
 		return
 	}
 	delete(e.PlanetIdPlanetMap, exoplanetId)
@@ -62,7 +65,7 @@ func (e *ExoplanetService) GetExoplanets() (exoplanets []*model.Exoplanet, msg s
 	if len(e.PlanetIdPlanetMap) <= 0 {
 		msg = "planet doest not exist"
 		code = 404
-		err = errors.New("planet doesn't exists")
+		err = errors.New(" planet doesn't exists")
 		return
 	}
 
@@ -81,7 +84,7 @@ func (e *ExoplanetService) GetExoplanetById(exoplanetId int) (exoplanet *model.E
 		msg = "planet doest not exist"
 		code = 404
 		err = errors.New("planet doesn't exists")
-		log.Fatal(functionName, "planet doesn't exists planet Id ", exoplanet.Id)
+		log.Fatal(functionName, " planet doesn't exists ")
 		return
 	}
 
