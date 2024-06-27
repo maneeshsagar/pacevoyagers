@@ -40,4 +40,4 @@ Gravity Calculation:
 2. Build and run the Docker container:
    ```bash
    docker build -t exoplanet-service .
-   docker run -p 8080:8001 exoplanet-service
+   docker run -it -p 8080:8080 exoplanet-service
